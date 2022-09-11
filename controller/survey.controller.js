@@ -1,97 +1,77 @@
-const Users = require("../models/Users.js")
+const Surveys = require("../models/Survey")
 
 exports.create = async (req, res) => {
 
-    const body = req.body
-
     console.log("Im adding a new record")
-    if (!body.name || !body.question) {
+    if (!req.body.name || !req.body.question) {
         res.status(400).send({ message: "Content can not be empty!" });
         return;
     }
-    if (body.user_id) {
-        res.status(400).send({ message: "User user_id cann't be specified!" });
+    if (req.body.customId) {
+        res.status(400).send({ message: "Survey custom ID cann't be specified!" });
         return;
     }
 
-    const user = new Users({
-        user_id: body.user_id,
-        username: body.username,
-        role_id: body.role_id,
-        role: body.role,
-        points: body.points,
-        daily: body.daily,
-        consecutive_daily: body.consecutive_daily,
-        banned_invitation: body.banned_invitation,
-        pending_invitation: body.pending_invitation,
-        monthly_invitation: body.monthly_invitation,
-        monthly_invitation_current: body.monthly_invitation_current,
-        monthly_updated: body.monthly_updated,
-        total_invitation: body.total_invitation,
-        monthly_points_received: body.monthly_points_received,
-        oda_in_name: body.oda_in_name,
-        oda_in_name_bonus: body.oda_in_name_bonus,
-        consecutive_oda: body.consecutive_oda,
-        daily_starred: body.daily_starred,
-        invitedBy: body.invitedBy,
-        total_daily: body.total_daily,
+    let mode = req.body.mode ? req.body.mode : "survey"
+    let modeLetter = mode == "survey" ? "S" : mode == "quiz" ? "Q" : "N"
+    let maxIdSurvey = await Surveys.find({})
+    maxIdSurvey = maxIdSurvey.filter(x => x.customId.substring(0, 1) === modeLetter)
+    maxIdSurvey = maxIdSurvey.map(x => +x.customId.substring(1, 2))
+    maxIdSurvey = Math.max(...maxIdSurvey)
+    let nextIdSurvey = modeLetter + (maxIdSurvey + 1)
+
+    const survey = new Surveys({
+        customId: nextIdSurvey,
+        name: req.body.name,
+        question: req.body.question,
+        republishable: req.body.republishable ? req.body.republishable : false,
+        wasPublished: req.body.wasPublished ? req.body.wasPublished : false,
+        mode: mode,
+        validFrom: req.body.validFrom ? req.body.validFrom : "",
+        options: req.body.options ? req.body.options : [],
+        voters: req.body.voters ? req.body.voters : []
     });
-    user
-        .save(user)
+    survey
+        .save(survey)
         .then(data => {
             res.send(data);
         })
         .catch(err => {
             res.status(500).send({
                 message:
-                    err.message || "Some error occurred while creating the User."
+                    err.message || "Some error occurred while creating the Tutorial."
             });
         });
 };
 
 exports.findAll = (req, res) => {
     console.log("Im gonna print all records")
-    Users.find({})
+    const name = req.query.name;
+    var condition = name ? { name: { $regex: new RegExp(name), $options: "i" } } : {};
+    Surveys.find(condition)
         .then(data => {
             res.send(data);
         })
         .catch(err => {
-            res
-                .status(500)
-                .send({
-                    message: err.message || "Some error occurred while retrieving users."
-                });
+            res.status(500).send({
+                message:
+                    err.message || "Some error occurred while retrieving surveys."
+            });
         });
 };
 
-exports.findOneUsername = (req, res) => {
-    const username = req.query.username;
-    var condition = username ? { name: { $regex: new RegExp(username), $options: "i" } } : {};
-    Users.find(condition)
+exports.findOne = (req, res) => {
+    const id = req.params.id;
+    Surveys.findOne({ "customId": id })
         .then(data => {
             if (!data)
-                res.status(404).send({ message: "Not found User with username " + username });
+                res.status(404).send({ message: "Not found Survey with id " + id });
             else res.send(data);
         })
         .catch(err => {
             res
                 .status(500)
-                .send({ message: "Error retrieving User with username=" + username });
-        });
-};
-
-exports.findOneUserID = (req, res) => {
-    const user_id = req.params.user_id;
-    Users.findOne({ "user_id": user_id })
-        .then(data => {
-            if (!data)
-                res.status(404).send({ message: "Not found User with user_id " + user_id });
-            else res.send(data);
-        })
-        .catch(err => {
-            res
-                .status(500)
-                .send({ message: "Error retrieving User with user_id=" + user_id });
+                .send({ message: "Error retrieving Survey with id=" + id });
         });
 };
 
@@ -101,39 +81,39 @@ exports.update = (req, res) => {
             message: "Data to update can not be empty!"
         });
     }
-    const user_id = req.params.user_id;
-    Users.findOneAndUpdate({ "user_id": user_id }, req.body, { useFindAndModify: false })
+    const id = req.params.id;
+    Surveys.findOneAndUpdate({ "customId": id }, req.body, { useFindAndModify: false })
         .then(data => {
             if (!data) {
                 res.status(404).send({
-                    message: `Cannot update User with user_id=${user_id}. Maybe Users was not found!`
+                    message: `Cannot update Survey with id=${id}. Maybe Surveys was not found!`
                 });
-            } else res.send({ message: "Users was updated successfully." });
+            } else res.send({ message: "Surveys was updated successfully." });
         })
         .catch(err => {
             res.status(500).send({
-                message: "Error updating Users with user_id=" + user_id
+                message: "Error updating Surveys with id=" + id
             });
         });
 };
 
 exports.delete = (req, res) => {
-    const user_id = req.params.user_id;
-    Users.findOneAndRemove({ "user_id": user_id })
+    const id = req.params.id;
+    Surveys.findOneAndRemove({ "customId": id })
         .then(data => {
             if (!data) {
                 res.status(404).send({
-                    message: `Cannot delete User with user_id=${user_id}. Maybe User was not found!`
+                    message: `Cannot delete Survey with id=${id}. Maybe Survey was not found!`
                 });
             } else {
                 res.send({
-                    message: "User was deleted successfully!"
+                    message: "Survey was deleted successfully!"
                 });
             }
         })
         .catch(err => {
             res.status(500).send({
-                message: "Could not delete User with user_id=" + user_id
+                message: "Could not delete Survey with id=" + id
             });
         });
 };

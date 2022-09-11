@@ -1,5 +1,6 @@
 const express = require('express')
 const user = require('./routers/user')
+const survey = require('./routers/survey')
 const Database = require("./config/Database")
 const bodyParser = require("body-parser");
 const cors = require("cors");
@@ -24,6 +25,7 @@ app.get('/', (req, res) => {
 
 app.use(express.json())
 app.use('/user', user)
+app.use('/survey', survey)
 
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
