@@ -45,7 +45,6 @@ exports.create = async (req, res) => {
 };
 
 exports.findAll = (req, res) => {
-    console.log("Im gonna print all records")
     const name = req.query.name;
     var condition = name ? { name: { $regex: new RegExp(name), $options: "i" } } : {};
     Surveys.find(condition)

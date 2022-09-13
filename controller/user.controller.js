@@ -50,7 +50,6 @@ exports.create = async (req, res) => {
 };
 
 exports.findAll = (req, res) => {
-    console.log("Im gonna print all records")
     Users.find({})
         .then(data => {
             res.send(data);
