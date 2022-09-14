@@ -20,7 +20,6 @@ exports.create = async (req, res) => {
 
     let mode = req.body.mode ? req.body.mode : "quiz"
     mode = mode.toUpperCase()
-    console.log(['QUIZ', 'TEXTNOVEL', 'VISUALNOVEL'].includes(mode))
     if (!['QUIZ', 'TEXTNOVEL', 'VISUALNOVEL'].includes(mode)) {
         res.status(500).send({ message: 'Unsupported mode' })
         return
