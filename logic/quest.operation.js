@@ -23,10 +23,10 @@ module.exports = {
 
             let record = null
             if (first) {
-                console.log('diocane')
                 const records = await Quests.find({ questId: id })
                 record = records.reduce((max, r) =>
-                    max.customId.substring(mode.length, r.customId.length) < r.customId.substring(mode.length, r.customId.length) ? max : r);
+                    max.customId.substring(1, r.customId.length) < r.customId.substring(1, r.customId.length) ? max : r);
+                console.log(record)
             } else {
                 record = await Quests.findOne({ customId: id })
             }
@@ -42,6 +42,10 @@ module.exports = {
                 rows = output.rows
             } else if (customId.toUpperCase().includes('T')) {
                 logger.info(`Ready to send a TexNovel - path [${record.path}]`)
+                output = await this.prepareEmbedForQuest(record, 1)
+                await Quests.updateOne({ customId: customId }, { $set: { wasPublished: true } })
+                embed = output.embed
+                rows = output.rows
             } else if (customId.toUpperCase().includes('V')) {
                 logger.info(`Ready to send a VisualNovel - path [${record.path}]`)
             }
@@ -56,10 +60,11 @@ module.exports = {
     // UTIL
 
     async prepareEmbedForQuest(record, mode) {
-        // MODE S : survey
-        // MODE Q : quiz
+        // MODE 0 : quest
+        // MODE 1 : textnvoel
+        // MODE 2 : visualnovel
 
-        const type = mode == 0 ? "Quest" : mdoe == 1 ? "TextNovel" : "VisualNovel"
+        const type = mode == 0 ? "Quest" : mode == 1 ? "TextNovel" : "VisualNovel"
 
         const isParentFirst = record.path == 1
         const qOptions = record.options
