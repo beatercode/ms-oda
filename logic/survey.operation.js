@@ -27,10 +27,6 @@ module.exports = {
                 embed = output.embed
                 rows = output.rows
                 break
-            case "N":
-                logger.info("Ready to send a Novel")
-                [embed, rows] = this.prepareEmbedForNovel(record)
-                break
         }
 
         return { "embed": embed, "rows": rows }
@@ -106,22 +102,6 @@ module.exports = {
         }
 
         return { "status": 200, "embed": embed, "rows": rows }
-    },
-
-    async prepareEmbedForNovel(record) {
-
-        const embed = new EmbedBuilder()
-            .setColor("#ffffff")
-            // .setTitle("ODA Clan Survey")
-            .setTitle("Novel | " + record.name)
-            .setDescription(record.question)
-
-        let qOptions = record.options
-        let qOptionsLen = qOptions.length
-
-        let rows = []
-
-        return { "embed": embed, "rows": rows }
     },
 
 }

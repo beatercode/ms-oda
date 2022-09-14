@@ -2,8 +2,8 @@
 const Quests = require("../models/Quest")
 
 exports.create = async (req, res) => {
-
-    console.log("Im adding a new record")
+    
+    try {
     if (!req.body.name || !req.body.question) {
         res.status(400).send({ message: "Content can not be empty!" });
         return;
@@ -20,10 +20,12 @@ exports.create = async (req, res) => {
 
     let mode = req.body.mode ? req.body.mode : "quiz"
     mode = mode.toUpperCase()
+    console.log(['QUIZ', 'TEXTNOVEL', 'VISUALNOVEL'].includes(mode))
     if (!['QUIZ', 'TEXTNOVEL', 'VISUALNOVEL'].includes(mode)) {
         res.status(500).send({ message: 'Unsupported mode' })
         return
     }
+
     let modeLetter = mode == 'QUIZ' ? 'Q' : mode == 'TEXTNOVEL' ? 'T' : 'V'
     let questionType = req.body.questionType
     if (questionType != 'text' && questionType != 'image') {
@@ -32,11 +34,8 @@ exports.create = async (req, res) => {
     }
     let maxIdQuest = await Quests.find({})
     maxIdQuest = maxIdQuest.filter(x => x.customId.substring(0, 1) === modeLetter)
-    console.log(maxIdQuest)
     maxIdQuest = maxIdQuest.map(x => +x.customId.substring(1, 2))
-    console.log(maxIdQuest)
     maxIdQuest = maxIdQuest.length > 0 ? Math.max(...maxIdQuest) : 0
-    console.log(maxIdQuest)
     let nextIdQuest = modeLetter + (maxIdQuest + 1)
 
     const quest = new Quests({
@@ -63,6 +62,10 @@ exports.create = async (req, res) => {
                     err.message || "Some error occurred while creating the Tutorial."
             });
         });
+    } catch (err) {
+        console.log(err)
+        res.status(400).send({ message: "Some error occured, open a ticket" });
+    }
 };
 
 exports.findAll = (req, res) => {
