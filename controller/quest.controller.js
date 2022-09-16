@@ -33,7 +33,7 @@ exports.create = async (req, res) => {
     }
     let maxIdQuest = await Quests.find({})
     maxIdQuest = maxIdQuest.filter(x => x.customId.substring(0, 1) === modeLetter)
-    maxIdQuest = maxIdQuest.map(x => +x.customId.substring(1, 2))
+    maxIdQuest = maxIdQuest.map(x => +x.customId.substring(1, x.customId.length))
     maxIdQuest = maxIdQuest.length > 0 ? Math.max(...maxIdQuest) : 0
     let nextIdQuest = modeLetter + (maxIdQuest + 1)
 
