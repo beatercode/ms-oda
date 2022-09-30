@@ -105,7 +105,7 @@ module.exports = {
             rows[0]
                 .addComponents(
                     new ButtonBuilder().setCustomId(responseIdPrefix + "_OPEN_COUNTER").setDisabled(true)
-                        .setLabel("COUNTER: 0").setStyle(ButtonStyle.Link)
+                        .setLabel("COUNTER: 0").setStyle(ButtonStyle.Secondary)
                 )
         }
 
