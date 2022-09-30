@@ -101,6 +101,11 @@ module.exports = {
             )
         }
 
+        console.log(rows)
+        if (rows[0].components.length == 1) {
+            console.log("done")
+        }
+
         return { "status": 200, "embed": embed, "rows": rows }
     },
 
