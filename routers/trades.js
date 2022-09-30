@@ -4,5 +4,7 @@ const controller = require("../controller/trades.controller");
 
 router.get("/listTransactions", controller.listTransactions);
 
+router.post("/trade", controller.trade);
+
 
 module.exports = router;
