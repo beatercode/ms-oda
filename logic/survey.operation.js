@@ -101,9 +101,14 @@ module.exports = {
             )
         }
 
-        console.log(rows)
         if (rows[0].components.length == 1) {
-            console.log("done")
+            rows.push(
+                new ActionRowBuilder()
+                    .addComponents(
+                        new ButtonBuilder().setCustomId(responseIdPrefix + "_OPEN_COUNTER").setDisabled(true)
+                            .setLabel("COUNTER: 0").setStyle(ButtonStyle.Success)
+                    )
+            )
         }
 
         return { "status": 200, "embed": embed, "rows": rows }
