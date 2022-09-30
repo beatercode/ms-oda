@@ -101,6 +101,7 @@ module.exports = {
             )
         }
 
+        /*
         if (rows[0].components.length == 1) {
             rows[0]
                 .addComponents(
@@ -108,6 +109,7 @@ module.exports = {
                         .setLabel("COUNTER: 0").setStyle(ButtonStyle.Secondary)
                 )
         }
+        */
 
         return { "status": 200, "embed": embed, "rows": rows }
     },
