@@ -102,13 +102,11 @@ module.exports = {
         }
 
         if (rows[0].components.length == 1) {
-            rows.push(
-                new ActionRowBuilder()
-                    .addComponents(
-                        new ButtonBuilder().setCustomId(responseIdPrefix + "_OPEN_COUNTER").setDisabled(true)
-                            .setLabel("COUNTER: 0").setStyle(ButtonStyle.Success)
-                    )
-            )
+            rows[0]
+                .addComponents(
+                    new ButtonBuilder().setCustomId(responseIdPrefix + "_OPEN_COUNTER").setDisabled(true)
+                        .setLabel("COUNTER: 0").setStyle(ButtonStyle.Link)
+                )
         }
 
         return { "status": 200, "embed": embed, "rows": rows }
