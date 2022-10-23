@@ -4,6 +4,7 @@ const survey = require('./routers/survey')
 const quest = require('./routers/quest')
 const trades = require('./routers/trades')
 const botmessage = require('./routers/botmessage')
+const website = require('./routers/website')
 const Database = require("./config/Database")
 const bodyParser = require("body-parser");
 const cors = require("cors");
@@ -32,6 +33,8 @@ app.use('/survey', survey)
 app.use('/quest', quest)
 app.use('/botmessage', botmessage)
 app.use('/trades', trades)
+app.use('/website', website)
+
 
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
