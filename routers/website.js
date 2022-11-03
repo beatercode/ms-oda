@@ -6,6 +6,7 @@ router.get("/get-homepage-data", controller.getHomepageData);
 router.get("/get-team", controller.getTeam);
 router.get("/get-services", controller.getServices);
 router.get("/service-detail", controller.getServiceDetail);
+router.get("/get-blog-articles", controller.getBlogArticles);
 
 
 module.exports = router;
